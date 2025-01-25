@@ -18,7 +18,7 @@ version: 2.0
 # ------------------------------------------------------------
 # 目次取得設定
 toc_url: https://\\k<domain>/ajax/novel/series_content/\\k<ncode>?last_order=0&order_by=asc&lang=ja
-subtitles: '{"id":"(?<subcode>\d+?)","userId":"\d+?","series":{.+?,"contentOrder":(?<index>\d+?)},"title":"(?<subtitle>.+?)","commentHtml":".+?",(?:".+?":.+?,)+?"uploadTimestamp":(?<subdate>.+?),"reuploadTimestamp":(?<subupdate>.+?),.+?}'
+subtitles: '{"id":"(?<subcode>\d+?)","userId":"\d+?","series":{"id":\\k<ncode>,"viewableType":\d,"contentOrder":(?<index>\d+?)},"title":"(?<subtitle>.+?)","commentHtml":".+?",(?:".+?":.+?,)+?"uploadTimestamp":(?<subdate>.+?),"reuploadTimestamp":(?<subupdate>.+?),.+?}'
 href: /ajax/novel/\\k<subcode>
 
 # 最後にマッチした話数を次の最初にする
