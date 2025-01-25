@@ -728,7 +728,11 @@ class Downloader
     open_uri_options = make_open_uri_options("Cookie" => cookie, allow_redirections: :safe)
     sleep_for_download
     begin
+      # @stream.puts("toc_url=" + toc_url)
       URI.open(toc_url, open_uri_options) do |toc_fp|
+        # @stream.puts("URI.open begin")
+        # @stream.puts("toc_fp.base_uri.to_s=" + toc_fp.base_uri.to_s)
+        # @stream.puts("toc_fp.read=" + toc_fp.read)
         if toc_fp.base_uri.to_s != toc_url
           # リダイレクトされた場合。
           # ノクターン・ムーンライトのNコードを ncode.syosetu.com に渡すと、年齢認証のクッションページに飛ばされる
@@ -858,6 +862,8 @@ class Downloader
 
   def __strdate_to_ymd(date)
     Date.parse(date.to_s.tr("年月日時分秒", "///:::")).strftime("%Y%m%d")
+  rescue
+    Time.at(date.to_i).strftime("%Y%m%d")
   end
 
   #
@@ -1172,7 +1178,11 @@ class Downloader
     begin
       open_uri_options = make_open_uri_options("Cookie" => cookie, allow_redirections: :safe)
       URI.open(url, "r:#{@setting["encoding"]}", open_uri_options) do |fp|
-        raw = Helper.pretreatment_source(fp.read, @setting["encoding"])
+      raw = fp.read
+      if @setting["resolve_escape"] 
+        raw = raw.gsub("\\\\", "\\").gsub("\\t", "\t").gsub("\\r\\n", "\n").gsub("\\n", "\n").gsub("\\/", "\/")
+      end
+      raw = Helper.pretreatment_source(fp.read, @setting["encoding"])
       end
     rescue OpenURI::HTTPError, Errno::ECONNRESET, Errno::ETIMEDOUT, Net::OpenTimeout, IO::TimeoutError => e
       case e.message

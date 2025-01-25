@@ -1,0 +1,71 @@
+# ------------------------------------------------------------
+# 小説サイト定義
+name: &name pixiv
+domain: www.pixiv.net
+top_url: https://\\k<domain>
+url:
+  - https?://\\k<domain>/novel/series/(?<ncode>\d+)
+  - https?://\\k<domain>/novel/show.php\?id=(?<ncode>\d+)
+  - https?://\\k<domain>/ajax/novel/series/(?<ncode>\d+)
+  - https?://\\k<domain>/ajax/novel/series_content/(?<ncode>\d+)\?last_order=0&order_by=asc&lang=ja
+encoding: UTF-8
+confirm_over18: no
+append_title_to_folder_name: yes
+title_strip_pattern: null
+sitename: *name
+version: 2.0
+
+# ------------------------------------------------------------
+# 目次取得設定
+toc_url: https://\\k<domain>/ajax/novel/series_content/\\k<ncode>?last_order=0&order_by=asc&lang=ja
+subtitles: '{"id":"(?<subcode>\d+?)","userId":"\d+?","series":{.+?,"contentOrder":(?<index>\d+?)},"title":"(?<subtitle>.+?)","commentHtml":".+?",(?:".+?":.+?,)+?"uploadTimestamp":(?<subdate>.+?),"reuploadTimestamp":(?<subupdate>.+?),.+?}'
+href: /ajax/novel/\\k<subcode>
+
+# 最後にマッチした話数を次の最初にする
+next_toc: '(?:.*)"contentOrder":(?<next_page>\d+?)}'
+next_url: https://\\k<domain>/ajax/novel/series_content/\\k<ncode>?last_order=\\k<next_page>&order_by=asc&lang=ja
+# 最大のページ数を得る。固定の数字でも可。
+toc_page_max: \\k<general_all_no>/
+
+# ------------------------------------------------------------
+# 本文取得設定
+body_pattern: ',"content":"(?<body>.+?)","coverUrl"'
+introduction_pattern: ',"description":"(?<introduction>.+)","id"'
+postscript_pattern: null
+
+illust_current_url: null
+illust_grep_pattern: null
+
+# ------------------------------------------------------------
+# 小説情報からパースするための設定
+novel_info_url: \\k<top_url>/ajax/novel/series/\\k<ncode>#?lang=ja
+
+# タイトル
+t: '"title":"(?<title>.+?)","caption"'
+
+# novel_type 小説種別
+# 対応するデータが見当たらないのでハーメルン向けの特殊処理を流用して判別する
+nt: 短編
+novel_type_string:
+  短編: 2
+
+# general_all_no 掲載話数
+ga: '"publishedContentCount":(?<general_all_no>\d+),'
+
+# story あらすじ
+s: '"caption":"(?<story>.*?)",'
+
+# general_firstup 初回掲載日
+gf: '"createDate":"(?<general_firstup>.+?)",'
+
+# novelupdated_at 小説の更新時刻。連載小説だと書いてないので最終掲載日で代用
+nu: '"updateDate":"(?<novelupdated_at>.+?)",'
+
+# general_lastup 最終話掲載日
+gl: '"updateDate":"(?<general_lastup>.+?)",'
+
+# writer 作者名
+w: '"userName":"(?<writer>.+?)",'
+
+# length 文字数
+l: '"publishedTotalCharacterCount":(?<length>.+?),'
