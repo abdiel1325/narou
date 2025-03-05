@@ -1182,7 +1182,7 @@ class Downloader
       if @setting["resolve_escape"] 
         raw = raw.gsub("\\\\", "\\").gsub("\\t", "\t").gsub("\\r\\n", "\n").gsub("\\n", "\n").gsub("\\/", "\/")
       end
-      raw = Helper.pretreatment_source(fp.read, @setting["encoding"])
+      raw = Helper.pretreatment_source(raw, @setting["encoding"])
       end
     rescue OpenURI::HTTPError, Errno::ECONNRESET, Errno::ETIMEDOUT, Net::OpenTimeout, IO::TimeoutError => e
       case e.message
